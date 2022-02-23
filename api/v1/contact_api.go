@@ -15,16 +15,16 @@ func AddContact(c *gin.Context) {
 	req := apireq.AddContact{}
 	err := c.BindJSON(&req)
 	if err != nil {
-		err = er.NewAppErr(400, er.ErrorParamInvalid, err.Error(), err)
-		_ = c.Error(err)
+		paramErr := er.NewAppErr(http.StatusBadRequest, er.ErrorParamInvalid, err.Error(), err)
+		_ = c.Error(paramErr)
 		return
 	}
 
 	// 參數驗證
 	err = valider.Validate.Struct(req)
 	if err != nil {
-		err = er.NewAppErr(400, er.ErrorParamInvalid, err.Error(), err)
-		_ = c.Error(err)
+		paramErr := er.NewAppErr(http.StatusBadRequest, er.ErrorParamInvalid, err.Error(), err)
+		_ = c.Error(paramErr)
 		return
 	}
 
@@ -43,16 +43,16 @@ func ListContact(c *gin.Context) {
 	req := apireq.ListContact{}
 	err := c.Bind(&req)
 	if err != nil {
-		err = er.NewAppErr(http.StatusBadRequest, er.ErrorParamInvalid, err.Error(), err)
-		_ = c.Error(err)
+		paramErr := er.NewAppErr(http.StatusBadRequest, er.ErrorParamInvalid, err.Error(), err)
+		_ = c.Error(paramErr)
 		return
 	}
 
 	// 參數驗證
 	err = valider.Validate.Struct(req)
 	if err != nil {
-		err = er.NewAppErr(http.StatusBadRequest, er.ErrorParamInvalid, err.Error(), err)
-		_ = c.Error(err)
+		paramErr := er.NewAppErr(http.StatusBadRequest, er.ErrorParamInvalid, err.Error(), err)
+		_ = c.Error(paramErr)
 		return
 	}
 
@@ -71,7 +71,7 @@ func GetContact(c *gin.Context) {
 	contactIdStr := c.Param("id")
 	contactId, err := strconv.Atoi(contactIdStr)
 	if err != nil {
-		paramErr := er.NewAppErr(400, er.ErrorParamInvalid, "contact id format error.", err)
+		paramErr := er.NewAppErr(http.StatusBadRequest, er.ErrorParamInvalid, "contact id format error.", err)
 		_ = c.Error(paramErr)
 		return
 	}
@@ -91,7 +91,7 @@ func EditContact(c *gin.Context) {
 	contactIdStr := c.Param("id")
 	contactId, err := strconv.Atoi(contactIdStr)
 	if err != nil {
-		paramErr := er.NewAppErr(400, er.ErrorParamInvalid, "contact id format error.", err)
+		paramErr := er.NewAppErr(http.StatusBadRequest, er.ErrorParamInvalid, "contact id format error.", err)
 		_ = c.Error(paramErr)
 		return
 	}
@@ -99,16 +99,16 @@ func EditContact(c *gin.Context) {
 	req := apireq.EditContact{}
 	err = c.BindJSON(&req)
 	if err != nil {
-		err = er.NewAppErr(400, er.ErrorParamInvalid, err.Error(), err)
-		_ = c.Error(err)
+		paramErr := er.NewAppErr(http.StatusBadRequest, er.ErrorParamInvalid, err.Error(), err)
+		_ = c.Error(paramErr)
 		return
 	}
 
 	// 參數驗證
 	err = valider.Validate.Struct(req)
 	if err != nil {
-		err = er.NewAppErr(400, er.ErrorParamInvalid, err.Error(), err)
-		_ = c.Error(err)
+		paramErr := er.NewAppErr(http.StatusBadRequest, er.ErrorParamInvalid, err.Error(), err)
+		_ = c.Error(paramErr)
 		return
 	}
 
