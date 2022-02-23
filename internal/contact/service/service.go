@@ -63,13 +63,47 @@ func (s *Service) List(req *apireq.ListContact) (*apires.ListContact, error) {
 }
 
 func (s *Service) Get(contactId int) (*model.Contact, error) {
-	return nil, nil
+	con, err := s.contactRepo.FindOne(&model.Contact{Id: contactId})
+	if err != nil {
+		findErr := er.NewAppErr(http.StatusInternalServerError, er.UnknownError, "find contact error.", err)
+		return nil, findErr
+	}
+
+	return con, nil
 }
 
 func (s *Service) Add(req *apireq.AddContact) error {
+	m := model.Contact{
+		Name:  req.Name,
+		Email: req.Email,
+		Phone: req.Phone,
+	}
+
+	err := s.contactRepo.Insert(&m)
+	if err != nil {
+		insertErr := er.NewAppErr(http.StatusInternalServerError, er.UnknownError, "insert contact error.", err)
+		return insertErr
+	}
+
 	return nil
 }
 
 func (s *Service) Edit(contactId int, req *apireq.EditContact) error {
+	con, err := s.contactRepo.FindOne(&model.Contact{Id: contactId})
+	if err != nil {
+		findErr := er.NewAppErr(http.StatusInternalServerError, er.UnknownError, "find contact error.", err)
+		return findErr
+	}
+
+	con.Phone = req.Phone
+	con.Email = req.Email
+	con.Name = req.Name
+
+	err = s.contactRepo.Update(con)
+	if err != nil {
+		updateErr := er.NewAppErr(http.StatusInternalServerError, er.UnknownError, "update contact error.", err)
+		return updateErr
+	}
+
 	return nil
 }

@@ -68,3 +68,55 @@ func TestService_List(t *testing.T) {
 		})
 	}
 }
+
+func TestService_Get(t *testing.T) {
+	// Arrange
+	cr := contactRepo.NewRepository()
+	cs := NewService(cr)
+
+	contactId := 2
+
+	// Act
+	con, err := cs.Get(contactId)
+
+	// Assert
+	assert.Nil(t, err)
+	assert.Equal(t, contactId, con.Id)
+}
+
+func TestService_Add(t *testing.T) {
+	// Arrange
+	cr := contactRepo.NewRepository()
+	cs := NewService(cr)
+
+	req := apireq.AddContact{
+		Name:  "test_name",
+		Email: "test_email",
+		Phone: "test_phone",
+	}
+
+	// Act
+	err := cs.Add(&req)
+
+	// Assert
+	assert.Nil(t, err)
+}
+
+func TestService_Edit(t *testing.T) {
+	// Arrange
+	cr := contactRepo.NewRepository()
+	cs := NewService(cr)
+
+	contactId := 1
+	req := apireq.EditContact{
+		Name:  "test_name",
+		Email: "test_email",
+		Phone: "test_phone",
+	}
+
+	// Act
+	err := cs.Edit(contactId, &req)
+
+	// Assert
+	assert.Nil(t, err)
+}
