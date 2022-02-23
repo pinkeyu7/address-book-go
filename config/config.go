@@ -4,6 +4,9 @@ import (
 	"github.com/joho/godotenv"
 	log "github.com/sirupsen/logrus"
 	"os"
+	"path"
+	"path/filepath"
+	"runtime"
 	"strings"
 	"time"
 )
@@ -36,6 +39,17 @@ func GetShortEnv() string {
 // Jwt Salt
 func GetJwtSalt() string {
 	return os.Getenv("JWT_SALT")
+}
+
+// Base path
+var (
+	_, b, _, _ = runtime.Caller(0)
+	basePath   = filepath.Dir(b)
+)
+
+func GetBasePath() string {
+	d := path.Join(path.Dir(b))
+	return filepath.Dir(d)
 }
 
 // Cors
