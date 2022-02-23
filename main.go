@@ -5,7 +5,6 @@ import (
 	"address-book-go/pkg/valider"
 	"address-book-go/route"
 	"flag"
-	"fmt"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -17,9 +16,6 @@ func main() {
 
 	config.InitEnv()
 	valider.Init()
-
-	fmt.Println(config.GetEnvironment())
-
 	r := route.Init()
 
 	// start server

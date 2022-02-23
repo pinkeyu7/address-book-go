@@ -5,7 +5,7 @@ import (
 	contactRepo "address-book-go/internal/contact/repository"
 	contactSrv "address-book-go/internal/contact/service"
 	"address-book-go/pkg/er"
-	"fmt"
+	"address-book-go/pkg/valider"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -13,6 +13,14 @@ import (
 func ListContact(c *gin.Context) {
 	req := apireq.ListContact{}
 	err := c.Bind(&req)
+	if err != nil {
+		err = er.NewAppErr(http.StatusBadRequest, er.ErrorParamInvalid, err.Error(), err)
+		_ = c.Error(err)
+		return
+	}
+
+	// 參數驗證
+	err = valider.Validate.Struct(req)
 	if err != nil {
 		err = er.NewAppErr(http.StatusBadRequest, er.ErrorParamInvalid, err.Error(), err)
 		_ = c.Error(err)
