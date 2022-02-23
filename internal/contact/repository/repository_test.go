@@ -2,6 +2,7 @@ package repository
 
 import (
 	"address-book-go/config"
+	"address-book-go/dto/model"
 	"address-book-go/pkg/valider"
 	"fmt"
 	"github.com/joho/godotenv"
@@ -28,6 +29,23 @@ func setUp() {
 	}
 
 	valider.Init()
+}
+
+func TestRepository_Insert(t *testing.T) {
+	// Arrange
+	cr := NewRepository()
+
+	m := model.Contact{
+		Name:  "test_name",
+		Email: "test_email",
+		Phone: "test_phone",
+	}
+
+	// Act
+	err := cr.Insert(&m)
+
+	// Assert
+	assert.Nil(t, err)
 }
 
 func TestRepository_Find(t *testing.T) {
@@ -62,6 +80,21 @@ func TestRepository_Find(t *testing.T) {
 	}
 }
 
+func TestRepository_FindOne(t *testing.T) {
+	// Arrange
+	cr := NewRepository()
+	contact := model.Contact{
+		Id: 2,
+	}
+
+	// Act
+	res, err := cr.FindOne(&contact)
+
+	// Assert
+	assert.Nil(t, err)
+	assert.Equal(t, 2, res.Id)
+}
+
 func TestRepository_Count(t *testing.T) {
 	// Arrange
 	cr := NewRepository()
@@ -75,4 +108,22 @@ func TestRepository_Count(t *testing.T) {
 	// Assert
 	assert.Nil(t, err)
 	assert.Len(t, data, 2)
+}
+
+func TestRepository_Update(t *testing.T) {
+	// Arrange
+	cr := NewRepository()
+
+	m := model.Contact{
+		Id:    1,
+		Name:  "test_name",
+		Email: "test_email",
+		Phone: "test_phone",
+	}
+
+	// Act
+	err := cr.Update(&m)
+
+	// Assert
+	assert.Nil(t, err)
 }

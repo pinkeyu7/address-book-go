@@ -12,6 +12,11 @@ func NewRepository() contact.Repository {
 	return &Repository{}
 }
 
+func (r *Repository) Insert(m *model.Contact) error {
+	// TODO - insert to mysql
+	return nil
+}
+
 func (r *Repository) Find(offset, limit int) ([]*model.Contact, error) {
 	list := make([]*model.Contact, 0)
 
@@ -33,8 +38,25 @@ func (r *Repository) Find(offset, limit int) ([]*model.Contact, error) {
 	return list, nil
 }
 
+func (r *Repository) FindOne(m *model.Contact) (*model.Contact, error) {
+	// TODO - get from mysql
+	m = &model.Contact{
+		Id:    2,
+		Name:  "name_2",
+		Email: "email_2",
+		Phone: "phone_2",
+	}
+
+	return m, nil
+}
+
 func (r *Repository) Count() (int, error) {
 	// TODO - get from mysql
 	count := 2
 	return count, nil
+}
+
+func (r *Repository) Update(m *model.Contact) error {
+	// TODO - update to mysql
+	return nil
 }
