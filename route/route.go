@@ -23,5 +23,7 @@ func Init() *gin.Engine {
 	corsConf.AllowOriginFunc = config.GetCorsRule
 	r.Use(cors.New(corsConf))
 
+	ContactV1(r)
+
 	return r
 }
