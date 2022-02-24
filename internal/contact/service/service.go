@@ -68,15 +68,20 @@ func (s *Service) Get(contactId int) (*model.Contact, error) {
 		findErr := er.NewAppErr(http.StatusInternalServerError, er.UnknownError, "find contact error.", err)
 		return nil, findErr
 	}
+	if con == nil {
+		notFoundErr := er.NewAppErr(http.StatusBadRequest, er.ResourceNotFoundError, "contact not found.", nil)
+		return nil, notFoundErr
+	}
 
 	return con, nil
 }
 
 func (s *Service) Add(req *apireq.AddContact) error {
 	m := model.Contact{
-		Name:  req.Name,
-		Email: req.Email,
-		Phone: req.Phone,
+		Name:   req.Name,
+		Email:  req.Email,
+		Phone:  req.Phone,
+		Gender: req.Gender,
 	}
 
 	err := s.contactRepo.Insert(&m)
@@ -94,10 +99,15 @@ func (s *Service) Edit(contactId int, req *apireq.EditContact) error {
 		findErr := er.NewAppErr(http.StatusInternalServerError, er.UnknownError, "find contact error.", err)
 		return findErr
 	}
+	if con == nil {
+		notFoundErr := er.NewAppErr(http.StatusBadRequest, er.ResourceNotFoundError, "contact not found.", nil)
+		return notFoundErr
+	}
 
-	con.Phone = req.Phone
-	con.Email = req.Email
 	con.Name = req.Name
+	con.Email = req.Email
+	con.Phone = req.Phone
+	con.Gender = req.Gender
 
 	err = s.contactRepo.Update(con)
 	if err != nil {
