@@ -3,6 +3,7 @@ module address-book-go
 go 1.17
 
 require (
+	github.com/brianvoe/gofakeit/v4 v4.3.0
 	github.com/gin-contrib/cors v1.3.1
 	github.com/gin-gonic/gin v1.7.7
 	github.com/go-playground/locales v0.13.0
