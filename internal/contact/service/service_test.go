@@ -2,6 +2,7 @@ package service
 
 import (
 	"address-book-go/config"
+	"address-book-go/driver"
 	"address-book-go/dto/apireq"
 	contactRepo "address-book-go/internal/contact/repository"
 	"address-book-go/pkg/valider"
@@ -11,6 +12,8 @@ import (
 	"log"
 	"os"
 	"testing"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 func TestMain(m *testing.M) {
@@ -34,7 +37,8 @@ func setUp() {
 
 func TestService_List(t *testing.T) {
 	// Arrange
-	cr := contactRepo.NewRepository()
+	orm, _ := driver.NewXorm()
+	cr := contactRepo.NewRepository(orm)
 	cs := NewService(cr)
 
 	// Act
@@ -71,7 +75,8 @@ func TestService_List(t *testing.T) {
 
 func TestService_Get(t *testing.T) {
 	// Arrange
-	cr := contactRepo.NewRepository()
+	orm, _ := driver.NewXorm()
+	cr := contactRepo.NewRepository(orm)
 	cs := NewService(cr)
 
 	contactId := 2
@@ -86,7 +91,8 @@ func TestService_Get(t *testing.T) {
 
 func TestService_Add(t *testing.T) {
 	// Arrange
-	cr := contactRepo.NewRepository()
+	orm, _ := driver.NewXorm()
+	cr := contactRepo.NewRepository(orm)
 	cs := NewService(cr)
 
 	req := apireq.AddContact{
@@ -104,7 +110,8 @@ func TestService_Add(t *testing.T) {
 
 func TestService_Edit(t *testing.T) {
 	// Arrange
-	cr := contactRepo.NewRepository()
+	orm, _ := driver.NewXorm()
+	cr := contactRepo.NewRepository(orm)
 	cs := NewService(cr)
 
 	contactId := 1

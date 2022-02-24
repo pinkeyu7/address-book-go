@@ -2,6 +2,7 @@ package repository
 
 import (
 	"address-book-go/config"
+	"address-book-go/driver"
 	"address-book-go/dto/model"
 	"address-book-go/pkg/valider"
 	"fmt"
@@ -10,6 +11,8 @@ import (
 	"log"
 	"os"
 	"testing"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 func TestMain(m *testing.M) {
@@ -33,7 +36,8 @@ func setUp() {
 
 func TestRepository_Insert(t *testing.T) {
 	// Arrange
-	cr := NewRepository()
+	orm, _ := driver.NewXorm()
+	cr := NewRepository(orm)
 
 	m := model.Contact{
 		Name:  "test_name",
@@ -50,7 +54,8 @@ func TestRepository_Insert(t *testing.T) {
 
 func TestRepository_Find(t *testing.T) {
 	// Arrange
-	cr := NewRepository()
+	orm, _ := driver.NewXorm()
+	cr := NewRepository(orm)
 
 	// Act
 	testCases := []struct {
@@ -82,7 +87,9 @@ func TestRepository_Find(t *testing.T) {
 
 func TestRepository_FindOne(t *testing.T) {
 	// Arrange
-	cr := NewRepository()
+	orm, _ := driver.NewXorm()
+	cr := NewRepository(orm)
+
 	contact := model.Contact{
 		Id: 2,
 	}
@@ -97,7 +104,8 @@ func TestRepository_FindOne(t *testing.T) {
 
 func TestRepository_Count(t *testing.T) {
 	// Arrange
-	cr := NewRepository()
+	orm, _ := driver.NewXorm()
+	cr := NewRepository(orm)
 
 	offset := 0
 	limit := 10
@@ -112,7 +120,8 @@ func TestRepository_Count(t *testing.T) {
 
 func TestRepository_Update(t *testing.T) {
 	// Arrange
-	cr := NewRepository()
+	orm, _ := driver.NewXorm()
+	cr := NewRepository(orm)
 
 	m := model.Contact{
 		Id:    1,

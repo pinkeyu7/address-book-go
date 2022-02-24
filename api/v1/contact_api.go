@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"address-book-go/api"
 	"address-book-go/dto/apireq"
 	contactRepo "address-book-go/internal/contact/repository"
 	contactSrv "address-book-go/internal/contact/service"
@@ -28,7 +29,8 @@ func AddContact(c *gin.Context) {
 		return
 	}
 
-	cr := contactRepo.NewRepository()
+	env := api.GetEnv()
+	cr := contactRepo.NewRepository(env.Orm)
 	cs := contactSrv.NewService(cr)
 	err = cs.Add(&req)
 	if err != nil {
@@ -56,7 +58,8 @@ func ListContact(c *gin.Context) {
 		return
 	}
 
-	cr := contactRepo.NewRepository()
+	env := api.GetEnv()
+	cr := contactRepo.NewRepository(env.Orm)
 	cs := contactSrv.NewService(cr)
 	res, err := cs.List(&req)
 	if err != nil {
@@ -76,7 +79,8 @@ func GetContact(c *gin.Context) {
 		return
 	}
 
-	cr := contactRepo.NewRepository()
+	env := api.GetEnv()
+	cr := contactRepo.NewRepository(env.Orm)
 	cs := contactSrv.NewService(cr)
 	res, err := cs.Get(contactId)
 	if err != nil {
@@ -112,7 +116,8 @@ func EditContact(c *gin.Context) {
 		return
 	}
 
-	cr := contactRepo.NewRepository()
+	env := api.GetEnv()
+	cr := contactRepo.NewRepository(env.Orm)
 	cs := contactSrv.NewService(cr)
 	err = cs.Edit(contactId, &req)
 	if err != nil {

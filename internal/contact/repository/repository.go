@@ -3,60 +3,63 @@ package repository
 import (
 	"address-book-go/dto/model"
 	"address-book-go/internal/contact"
+	"xorm.io/xorm"
 )
 
 type Repository struct {
+	orm *xorm.EngineGroup
 }
 
-func NewRepository() contact.Repository {
-	return &Repository{}
+func NewRepository(orm *xorm.EngineGroup) contact.Repository {
+	return &Repository{
+		orm: orm,
+	}
 }
 
 func (r *Repository) Insert(m *model.Contact) error {
-	// TODO - insert to mysql
+	_, err := r.orm.Insert(m)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
 func (r *Repository) Find(offset, limit int) ([]*model.Contact, error) {
 	list := make([]*model.Contact, 0)
 
-	// TODO - get from mysql
-	list = append(list, &model.Contact{
-		// Fake data
-		Id:    1,
-		Name:  "name_1",
-		Phone: "phone_1",
-		Email: "email_1",
-	})
-	list = append(list, &model.Contact{
-		Id:    2,
-		Name:  "name_2",
-		Email: "email_2",
-		Phone: "phone_2",
-	})
+	err := r.orm.Limit(limit, offset).Find(&list)
+	if err != nil {
+		return nil, err
+	}
 
 	return list, nil
 }
 
 func (r *Repository) FindOne(m *model.Contact) (*model.Contact, error) {
-	// TODO - get from mysql
-	m = &model.Contact{
-		Id:    2,
-		Name:  "name_2",
-		Email: "email_2",
-		Phone: "phone_2",
+	has, err := r.orm.Get(m)
+	if err != nil {
+		return nil, err
+	}
+	if !has {
+		return nil, nil
 	}
 
 	return m, nil
 }
 
 func (r *Repository) Count() (int, error) {
-	// TODO - get from mysql
-	count := 2
-	return count, nil
+	count, err := r.orm.Count(&model.Contact{})
+	if err != nil {
+		return 0, err
+	}
+
+	return int(count), nil
 }
 
 func (r *Repository) Update(m *model.Contact) error {
-	// TODO - update to mysql
+	_, err := r.orm.ID(m.Id).Update(&m)
+	if err != nil {
+		return err
+	}
 	return nil
 }
