@@ -2,6 +2,7 @@ package route
 
 import (
 	"address-book-go/config"
+	"address-book-go/middleware"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
@@ -13,8 +14,8 @@ func Init() *gin.Engine {
 	r.MaxMultipartMemory = 64 << 20 // 8 MiB
 
 	// Middleware
-	//r.Use(middleware.LogRequest())
-	//r.Use(middleware.ErrorResponse())
+	r.Use(middleware.LogRequest())
+	r.Use(middleware.ErrorResponse())
 
 	corsConf := cors.DefaultConfig()
 	corsConf.AllowCredentials = true

@@ -2,6 +2,7 @@ package main
 
 import (
 	"address-book-go/config"
+	"address-book-go/pkg/logr"
 	"address-book-go/pkg/valider"
 	"address-book-go/route"
 	"flag"
@@ -15,7 +16,13 @@ func main() {
 	flag.Parse()
 
 	config.InitEnv()
+
+	// init logger
+	logr.InitLogger()
+
+	// validation init
 	valider.Init()
+
 	r := route.Init()
 
 	// start server
