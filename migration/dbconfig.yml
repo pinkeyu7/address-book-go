@@ -1,16 +1,16 @@
 localhost:
   dialect: mysql
-  datasource: root:secret@tcp(127.0.0.1:33060)/address-book?parseTime=true
+  datasource: root:secret@tcp(127.0.0.1:33060)/address_book?parseTime=true
   dir: migration
   table: migrations
 development:
   dialect: mysql
-  datasource: ${MYSQL_USER}:${MYSQL_PASSWORD}@tcp(127.0.0.1:3306)/address-book?parseTime=true
+  datasource: ${MYSQL_USER}:${MYSQL_PASSWORD}@tcp(127.0.0.1:3306)/address_book?parseTime=true
   dir: migration
   table: migrations
 staging:
   dialect: mysql
-  datasource: ${MYSQL_USER}:${MYSQL_PASSWORD}@tcp(127.0.0.1:3306)/address-book?parseTime=true
+  datasource: ${MYSQL_USER}:${MYSQL_PASSWORD}@tcp(127.0.0.1:3306)/address_book?parseTime=true
   dir: migration
   table: migrations
 master:
