@@ -12,6 +12,21 @@ import (
 	"strconv"
 )
 
+// AddContact
+// @Summary Add Contact 新增意見回饋
+// @Produce json
+// @Accept json
+// @Tags Contact
+// @Security Bearer
+// @Param Bearer header string true "JWT Token"
+// @Param Body body apireq.AddContact true "Request Add Contact"
+// @Success 200 {string} string "{}"
+// @Failure 400 {object} er.AppErrorMsg "{"code":"400400","message":"Wrong parameter format or invalid"}"
+// @Failure 401 {object} er.AppErrorMsg "{"code":"400401","message":"Unauthorized"}"
+// @Failure 403 {object} er.AppErrorMsg "{"code":"400403","message":"Permission denied"}"
+// @Failure 404 {object} er.AppErrorMsg "{"code":"400404","message":"Resource not found"}"
+// @Failure 500 {object} er.AppErrorMsg "{"code":"500000","message":"Database unknown error"}"
+// @Router /v1/contacts [post]
 func AddContact(c *gin.Context) {
 	req := apireq.AddContact{}
 	err := c.BindJSON(&req)
@@ -41,6 +56,22 @@ func AddContact(c *gin.Context) {
 	c.JSON(http.StatusOK, map[string]interface{}{})
 }
 
+// ListContact
+// @Summary List Contact 聯絡人列表
+// @Produce json
+// @Accept json
+// @Tags Contact
+// @Security Bearer
+// @Param Bearer header string true "JWT Token"
+// @Param page query string true "Page"
+// @Param per_page query string true "Per Page"
+// @Success 200 {object} apires.ListContact
+// @Failure 400 {object} er.AppErrorMsg "{"code":"400400","message":"Wrong parameter format or invalid"}"
+// @Failure 401 {object} er.AppErrorMsg "{"code":"400401","message":"Unauthorized"}"
+// @Failure 403 {object} er.AppErrorMsg "{"code":"400403","message":"Permission denied"}"
+// @Failure 404 {object} er.AppErrorMsg "{"code":"400404","message":"Resource not found"}"
+// @Failure 500 {object} er.AppErrorMsg "{"code":"500000","message":"Database unknown error"}"
+// @Router /v1/contacts [get]
 func ListContact(c *gin.Context) {
 	req := apireq.ListContact{}
 	err := c.Bind(&req)
@@ -70,6 +101,21 @@ func ListContact(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
+// GetContact
+// @Summary Get Contact 取得聯絡人
+// @Produce json
+// @Accept json
+// @Tags Contact
+// @Security Bearer
+// @Param Bearer header string true "JWT Token"
+// @Param contact_id path int true "聯絡人id e.g. 11"
+// @Success 200 {object} model.Contact
+// @Failure 400 {object} er.AppErrorMsg "{"code":"400400","message":"Wrong parameter format or invalid"}"
+// @Failure 401 {object} er.AppErrorMsg "{"code":"400401","message":"Unauthorized"}"
+// @Failure 403 {object} er.AppErrorMsg "{"code":"400403","message":"Permission denied"}"
+// @Failure 404 {object} er.AppErrorMsg "{"code":"400404","message":"Resource not found"}"
+// @Failure 500 {object} er.AppErrorMsg "{"code":"500000","message":"Database unknown error"}"
+// @Router /v1/contacts/{contact_id} [get]
 func GetContact(c *gin.Context) {
 	contactIdStr := c.Param("id")
 	contactId, err := strconv.Atoi(contactIdStr)
@@ -91,6 +137,22 @@ func GetContact(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
+// EditContact
+// @Summary Edit Contact 編輯聯絡人
+// @Produce json
+// @Accept json
+// @Tags Contact
+// @Security Bearer
+// @Param Bearer header string true "JWT Token"
+// @Param contact_id path int true "聯絡人id e.g. 11"
+// @Param Body body apireq.EditContact true "Request Edit Contact"
+// @Success 200 {string} string "{}"
+// @Failure 400 {object} er.AppErrorMsg "{"code":"400400","message":"Wrong parameter format or invalid"}"
+// @Failure 401 {object} er.AppErrorMsg "{"code":"400401","message":"Unauthorized"}"
+// @Failure 403 {object} er.AppErrorMsg "{"code":"400403","message":"Permission denied"}"
+// @Failure 404 {object} er.AppErrorMsg "{"code":"400404","message":"Resource not found"}"
+// @Failure 500 {object} er.AppErrorMsg "{"code":"500000","message":"Database unknown error"}"
+// @Router /v1/contacts/{contact_id} [put]
 func EditContact(c *gin.Context) {
 	contactIdStr := c.Param("id")
 	contactId, err := strconv.Atoi(contactIdStr)

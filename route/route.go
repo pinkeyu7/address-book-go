@@ -2,9 +2,13 @@ package route
 
 import (
 	"address-book-go/config"
+	_ "address-book-go/docs"
 	"address-book-go/middleware"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+
+	ginSwagger "github.com/swaggo/gin-swagger"
+	"github.com/swaggo/gin-swagger/swaggerFiles"
 )
 
 func Init() *gin.Engine {
@@ -16,6 +20,11 @@ func Init() *gin.Engine {
 	// Middleware
 	r.Use(middleware.LogRequest())
 	r.Use(middleware.ErrorResponse())
+
+	// Swagger
+	if mode := gin.Mode(); mode == gin.DebugMode {
+		r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	}
 
 	corsConf := cors.DefaultConfig()
 	corsConf.AllowCredentials = true

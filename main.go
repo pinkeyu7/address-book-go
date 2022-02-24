@@ -13,6 +13,12 @@ import (
 
 var port string
 
+// @title Address book API
+// @version 1.0
+// @description Address book API
+// @termsOfService https://github.com/pinkeyu7/address-book-go
+// @license.name MIT
+// @license.url
 func main() {
 	// init http port
 	flag.StringVar(&port, "port", "8080", "Initial port number")
