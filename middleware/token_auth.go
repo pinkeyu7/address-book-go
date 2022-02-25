@@ -40,12 +40,7 @@ func TokenAuth() gin.HandlerFunc {
 		// Jwt token state management
 		env := api.GetEnv()
 		tc := tokenRepo.NewRedis(env.RedisCluster)
-		serverIat, err := tc.GetTokenIat(accId)
-		if err != nil {
-			findErr := er.NewAppErr(http.StatusInternalServerError, er.UnknownError, "find token error.", err)
-			c.AbortWithStatusJSON(findErr.GetStatus(), findErr.GetMsg())
-			return
-		}
+		serverIat, _ := tc.GetTokenIat(accId)
 		if jwtIat < serverIat {
 			iatErr := er.NewAppErr(http.StatusUnauthorized, er.UnauthorizedError, "token is expired.", nil)
 			c.AbortWithStatusJSON(iatErr.GetStatus(), iatErr.GetMsg())
