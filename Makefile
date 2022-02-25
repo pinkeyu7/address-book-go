@@ -12,9 +12,11 @@ doc:
 	swag init
 
 test:
+	$(GOCMD) clean -testcache
 	$(GOTEST) ./...
 
 testc:
+	$(GOCMD) clean -testcache
 	$(GOTEST) -cover ./...
 
 migrate-up:
