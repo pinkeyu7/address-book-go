@@ -143,7 +143,20 @@ func TestService_Edit(t *testing.T) {
 	cr := contactRepo.NewRepository(orm)
 	cs := NewService(cr)
 
-	contactId := 1
+	// No data
+	contactId := 10
+
+	// Act
+	err := cs.Edit(contactId, &apireq.EditContact{})
+
+	// Assert
+	assert.NotNil(t, err)
+	notFoundErr := err.(*er.AppError)
+	assert.Equal(t, http.StatusBadRequest, notFoundErr.StatusCode)
+	assert.Equal(t, strconv.Itoa(er.ResourceNotFoundError), notFoundErr.Code)
+
+	// Has data
+	contactId = 1
 	con := model.Contact{Id: contactId}
 	_, _ = orm.Get(&con)
 
@@ -156,7 +169,7 @@ func TestService_Edit(t *testing.T) {
 	}
 
 	// Act
-	err := cs.Edit(contactId, &req)
+	err = cs.Edit(contactId, &req)
 
 	// Assert
 	assert.Nil(t, err)

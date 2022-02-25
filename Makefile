@@ -14,6 +14,9 @@ doc:
 test:
 	$(GOTEST) ./...
 
+testc:
+	$(GOTEST) -cover ./...
+
 migrate-up:
 	sql-migrate up -config=$(MIGRATE_CONFIG) -env="localhost"
 
