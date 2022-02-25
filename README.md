@@ -28,6 +28,16 @@ export GO111MODULE=on
 go mod tidy
 ```
 
+### How to set up environment?
+
+安裝 docker 後，使用 `docker-compose.yml` 來建立 mysql、redis
+
+```bash
+docker-compose up -d
+```
+
+並參考 `.env.sample` 來設置 `.env` 
+
 ### How to do DB migration?
 
 我們使用 sql-migrate 套件實作 DB migration 功能，
