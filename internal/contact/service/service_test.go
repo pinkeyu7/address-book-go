@@ -4,13 +4,18 @@ import (
 	"address-book-go/config"
 	"address-book-go/driver"
 	"address-book-go/dto/apireq"
+	"address-book-go/dto/model"
+	"address-book-go/internal/contact"
 	contactRepo "address-book-go/internal/contact/repository"
+	"address-book-go/pkg/er"
 	"address-book-go/pkg/valider"
 	"fmt"
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 	"log"
+	"net/http"
 	"os"
+	"strconv"
 	"testing"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -48,14 +53,19 @@ func TestService_List(t *testing.T) {
 		WantCount int
 	}{
 		{
-			5,
+			2,
 			1,
 			2,
 		},
 		{
-			5,
+			10,
 			1,
+			4,
+		},
+		{
+			10,
 			2,
+			0,
 		},
 	}
 	// Act
@@ -79,10 +89,24 @@ func TestService_Get(t *testing.T) {
 	cr := contactRepo.NewRepository(orm)
 	cs := NewService(cr)
 
-	contactId := 2
+	// No data
+	contactId := 10
 
 	// Act
 	con, err := cs.Get(contactId)
+
+	// Assert
+	assert.NotNil(t, err)
+	assert.Nil(t, con)
+	notFoundErr := err.(*er.AppError)
+	assert.Equal(t, http.StatusBadRequest, notFoundErr.StatusCode)
+	assert.Equal(t, strconv.Itoa(er.ResourceNotFoundError), notFoundErr.Code)
+
+	// Has data
+	contactId = 2
+
+	// Act
+	con, err = cs.Get(contactId)
 
 	// Assert
 	assert.Nil(t, err)
@@ -95,10 +119,12 @@ func TestService_Add(t *testing.T) {
 	cr := contactRepo.NewRepository(orm)
 	cs := NewService(cr)
 
+	gender := contact.Male
 	req := apireq.AddContact{
-		Name:  "test_name",
-		Email: "test_email",
-		Phone: "test_phone",
+		Name:   "test_name",
+		Email:  "test_email",
+		Phone:  "test_phone",
+		Gender: &gender,
 	}
 
 	// Act
@@ -106,6 +132,9 @@ func TestService_Add(t *testing.T) {
 
 	// Assert
 	assert.Nil(t, err)
+
+	// Teardown
+	_, _ = orm.Where("name = ?", req.Name).Delete(&model.Contact{})
 }
 
 func TestService_Edit(t *testing.T) {
@@ -115,10 +144,15 @@ func TestService_Edit(t *testing.T) {
 	cs := NewService(cr)
 
 	contactId := 1
+	con := model.Contact{Id: contactId}
+	_, _ = orm.Get(&con)
+
+	gender := contact.Male
 	req := apireq.EditContact{
-		Name:  "test_name",
-		Email: "test_email",
-		Phone: "test_phone",
+		Name:   "test_name",
+		Email:  "test_email",
+		Phone:  "test_phone",
+		Gender: &gender,
 	}
 
 	// Act
@@ -126,4 +160,7 @@ func TestService_Edit(t *testing.T) {
 
 	// Assert
 	assert.Nil(t, err)
+
+	// Teardown
+	_, _ = orm.ID(contactId).Update(&con)
 }

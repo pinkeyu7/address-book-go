@@ -4,6 +4,7 @@ import (
 	"address-book-go/config"
 	"address-book-go/driver"
 	"address-book-go/dto/model"
+	"address-book-go/internal/contact"
 	"address-book-go/pkg/valider"
 	"fmt"
 	"github.com/joho/godotenv"
@@ -39,10 +40,12 @@ func TestRepository_Insert(t *testing.T) {
 	orm, _ := driver.NewXorm()
 	cr := NewRepository(orm)
 
+	gender := contact.Male
 	m := model.Contact{
-		Name:  "test_name",
-		Email: "test_email",
-		Phone: "test_phone",
+		Name:   "test_name",
+		Email:  "test_email",
+		Phone:  "test_phone",
+		Gender: &gender,
 	}
 
 	// Act
@@ -50,6 +53,9 @@ func TestRepository_Insert(t *testing.T) {
 
 	// Assert
 	assert.Nil(t, err)
+
+	// Teardown
+	_, _ = orm.ID(m.Id).Delete(&model.Contact{})
 }
 
 func TestRepository_Find(t *testing.T) {
@@ -64,14 +70,14 @@ func TestRepository_Find(t *testing.T) {
 		WantCount int
 	}{
 		{
-			5,
+			2,
 			0,
 			2,
 		},
 		{
-			5,
+			10,
 			0,
-			2,
+			4,
 		},
 	}
 	// Act
@@ -90,16 +96,21 @@ func TestRepository_FindOne(t *testing.T) {
 	orm, _ := driver.NewXorm()
 	cr := NewRepository(orm)
 
-	contact := model.Contact{
-		Id: 2,
-	}
-
+	// No data
 	// Act
-	res, err := cr.FindOne(&contact)
+	res, err := cr.FindOne(&model.Contact{Id: 100})
 
 	// Assert
 	assert.Nil(t, err)
-	assert.Equal(t, 2, res.Id)
+	assert.Nil(t, res)
+
+	// Has data
+	// Act
+	res, err = cr.FindOne(&model.Contact{Id: 1})
+
+	// Assert
+	assert.Nil(t, err)
+	assert.Equal(t, 1, res.Id)
 }
 
 func TestRepository_Count(t *testing.T) {
@@ -107,15 +118,12 @@ func TestRepository_Count(t *testing.T) {
 	orm, _ := driver.NewXorm()
 	cr := NewRepository(orm)
 
-	offset := 0
-	limit := 10
-
 	// Act
-	data, err := cr.Find(offset, limit)
+	count, err := cr.Count()
 
 	// Assert
 	assert.Nil(t, err)
-	assert.Len(t, data, 2)
+	assert.Equal(t, 4, count)
 }
 
 func TestRepository_Update(t *testing.T) {
@@ -123,11 +131,16 @@ func TestRepository_Update(t *testing.T) {
 	orm, _ := driver.NewXorm()
 	cr := NewRepository(orm)
 
+	con := model.Contact{Id: 1}
+	_, _ = orm.Get(&con)
+
+	gender := contact.Male
 	m := model.Contact{
-		Id:    1,
-		Name:  "test_name",
-		Email: "test_email",
-		Phone: "test_phone",
+		Id:     1,
+		Name:   "test_name",
+		Email:  "test_email",
+		Phone:  "test_phone",
+		Gender: &gender,
 	}
 
 	// Act
@@ -135,4 +148,7 @@ func TestRepository_Update(t *testing.T) {
 
 	// Assert
 	assert.Nil(t, err)
+
+	// Teardown
+	_, _ = orm.ID(con.Id).Update(&con)
 }

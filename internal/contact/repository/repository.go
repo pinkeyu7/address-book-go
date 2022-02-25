@@ -57,7 +57,7 @@ func (r *Repository) Count() (int, error) {
 }
 
 func (r *Repository) Update(m *model.Contact) error {
-	_, err := r.orm.ID(m.Id).Update(&m)
+	_, err := r.orm.ID(m.Id).Update(m)
 	if err != nil {
 		return err
 	}
