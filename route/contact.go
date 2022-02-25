@@ -2,12 +2,13 @@ package route
 
 import (
 	apiV1 "address-book-go/api/v1"
+	"address-book-go/middleware"
 	"github.com/gin-gonic/gin"
 )
 
 func ContactV1(r *gin.Engine) {
 	v1Auth := r.Group("/v1/contacts")
-	//v1Auth.Use(middleware.TokenAuth())
+	v1Auth.Use(middleware.TokenAuth())
 
 	v1Auth.POST("/", func(c *gin.Context) {
 		apiV1.AddContact(c)

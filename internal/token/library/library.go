@@ -84,7 +84,7 @@ func CheckJWTAccountId(c *gin.Context, accId int) error {
 	claimsMap := ParseClaims(claims)
 
 	if strconv.Itoa(accId) != claimsMap["account_id"] {
-		authErr := er.NewAppErr(http.StatusUnauthorized, er.UnauthorizedError, "Token is not valid", nil)
+		authErr := er.NewAppErr(http.StatusUnauthorized, er.UnauthorizedError, "token is not valid.", nil)
 		return authErr
 	}
 
