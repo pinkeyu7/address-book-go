@@ -30,20 +30,20 @@ func (s *Service) GenToken(req *apireq.GetSysAccountToken) (*apires.SysAccountTo
 		return nil, findErr
 	}
 	if acc == nil || acc.IsDisable {
-		authErr := er.NewAppErr(http.StatusBadRequest, er.UnauthorizedError, "", nil)
+		authErr := er.NewAppErr(http.StatusUnauthorized, er.UnauthorizedError, "", nil)
 		return nil, authErr
 	}
 
 	// Password not matched
 	pw := helper.ScryptStr(req.Password)
 	if acc.Password != pw {
-		authErr := er.NewAppErr(http.StatusBadRequest, er.UnauthorizedError, "", nil)
+		authErr := er.NewAppErr(http.StatusUnauthorized, er.UnauthorizedError, "", nil)
 		return nil, authErr
 	}
 
 	oToken, expiredAt, err := tokenLibrary.GenToken(acc.Id)
 	if err != nil {
-		tokenErr := er.NewAppErr(http.StatusBadRequest, er.UnauthorizedError, "", err)
+		tokenErr := er.NewAppErr(http.StatusUnauthorized, er.UnauthorizedError, "", err)
 		return nil, tokenErr
 	}
 
