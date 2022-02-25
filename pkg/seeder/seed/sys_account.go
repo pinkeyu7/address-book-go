@@ -6,12 +6,14 @@ import (
 	"xorm.io/xorm"
 )
 
-func CreateSysAccount(engine *xorm.Engine, account, name, email, phone, password string) error {
+func CreateSysAccount(engine *xorm.Engine, account, name, email, phone string) error {
+	defaultPassword := "0eb683eacea7957d8b4140ed837f1ee7fce60ba74e48839a51d6b2085938b49b"
+
 	con := model.SysAccount{
 		Account:  account,
 		Phone:    phone,
 		Email:    email,
-		Password: password,
+		Password: defaultPassword,
 		Name:     name,
 	}
 
@@ -24,7 +26,7 @@ func AllSysAccount() []Seed {
 		{
 			Name: "Create System Account - 1",
 			Run: func(engine *xorm.Engine) error {
-				err := CreateSysAccount(engine, "sys_account", gofakeit.Name(), gofakeit.Email(), gofakeit.Phone(), "123456")
+				err := CreateSysAccount(engine, "sys_account", gofakeit.Name(), gofakeit.Email(), gofakeit.Phone())
 				if err != nil {
 					return err
 				}

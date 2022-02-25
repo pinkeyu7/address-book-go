@@ -4,6 +4,7 @@ go 1.17
 
 require (
 	github.com/brianvoe/gofakeit/v4 v4.3.0
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gin-contrib/cors v1.3.1
 	github.com/gin-gonic/gin v1.7.7
 	github.com/go-playground/locales v0.13.0
@@ -11,12 +12,14 @@ require (
 	github.com/go-playground/validator/v10 v10.4.1
 	github.com/go-redis/redis/v7 v7.4.1
 	github.com/go-sql-driver/mysql v1.6.0
+	github.com/gomodule/redigo v1.8.8
 	github.com/joho/godotenv v1.4.0
 	github.com/sirupsen/logrus v1.8.1
 	github.com/stretchr/testify v1.7.0
 	github.com/swaggo/gin-swagger v1.4.1
 	github.com/swaggo/swag v1.8.0
 	go.uber.org/zap v1.21.0
+	golang.org/x/crypto v0.0.0-20210616213533-5ff15b29337e
 	gopkg.in/guregu/null.v4 v4.0.0
 	xorm.io/xorm v1.2.5
 )
@@ -46,7 +49,6 @@ require (
 	github.com/ugorji/go/codec v1.1.7 // indirect
 	go.uber.org/atomic v1.7.0 // indirect
 	go.uber.org/multierr v1.6.0 // indirect
-	golang.org/x/crypto v0.0.0-20210616213533-5ff15b29337e // indirect
 	golang.org/x/net v0.0.0-20220127200216-cd36cc0744dd // indirect
 	golang.org/x/sys v0.0.0-20220224003255-dbe011f71a99 // indirect
 	golang.org/x/text v0.3.7 // indirect

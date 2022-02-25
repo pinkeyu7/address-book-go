@@ -5,7 +5,7 @@ import "time"
 type SysAccount struct {
 	Id                       int       `xorm:"pk autoincr BIGINT(20)" json:"id"`
 	Account                  string    `xorm:"not null default '' comment('account') VARCHAR(64)" json:"account"`
-	Phone                    string    `xorm:"not null default '' comment('phone') VARCHAR(64)" json:"phone"`
+	Phone                    string    `xorm:"not null default '' comment('phone') VARCHAR(20)" json:"phone"`
 	Email                    string    `xorm:"not null default '' comment('email') VARCHAR(64)" json:"email"`
 	Password                 string    `xorm:"not null default '' comment('password') VARCHAR(64)" json:"password"`
 	Name                     string    `xorm:"not null default '' comment('name') VARCHAR(64)" json:"name"`

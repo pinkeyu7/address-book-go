@@ -4,8 +4,12 @@ import (
 	"address-book-go/config"
 	_ "address-book-go/docs"
 	"address-book-go/middleware"
+	"address-book-go/pkg/request_cache"
+	"fmt"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"os"
+	"time"
 
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
@@ -16,6 +20,12 @@ func Init() *gin.Engine {
 
 	// gin 檔案上傳body限制
 	r.MaxMultipartMemory = 64 << 20 // 8 MiB
+
+	// Request cache
+	redisHost := os.Getenv("REDIS_HOST")
+	redisPort := os.Getenv("REDIS_PORT")
+	addr := fmt.Sprintf("%s:%s", redisHost, redisPort)
+	store := request_cache.NewRedisCache(addr, "", time.Second)
 
 	// Middleware
 	r.Use(middleware.LogRequest())
@@ -33,6 +43,7 @@ func Init() *gin.Engine {
 	corsConf.AllowOriginFunc = config.GetCorsRule
 	r.Use(cors.New(corsConf))
 
+	TokenV1(r, store)
 	ContactV1(r)
 
 	return r
