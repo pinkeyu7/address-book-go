@@ -44,6 +44,10 @@ func main() {
 
 	gofakeit.Seed(time.Now().Unix())
 
+	// Create Sys Account
+	sysAccountSeeds := seed.AllSysAccount()
+	run(engine, sysAccountSeeds)
+
 	// Create Contact
 	contactSeeds := seed.AllContact()
 	run(engine, contactSeeds)
