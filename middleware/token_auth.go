@@ -1,7 +1,9 @@
 package middleware
 
 import (
+	"address-book-go/api"
 	tokenLibrary "address-book-go/internal/token/library"
+	tokenRepo "address-book-go/internal/token/repository"
 	"address-book-go/pkg/er"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -25,33 +27,34 @@ func TokenAuth() gin.HandlerFunc {
 		}
 
 		var jwtAccountId, parseAccountIdOk = claims["account_id"].(string)
-		//var jwtIat, jwtIatOk = claims["iat"].(float64)
+		var jwtIat, jwtIatOk = claims["iat"].(float64)
 
-		if !parseAccountIdOk {
-			parseJwtInfoErr := er.NewAppErr(401, er.UnauthorizedError, "token is not valid.", nil)
+		if !parseAccountIdOk || !jwtIatOk {
+			parseJwtInfoErr := er.NewAppErr(http.StatusUnauthorized, er.UnauthorizedError, "token is not valid.", nil)
 			c.AbortWithStatusJSON(parseJwtInfoErr.GetStatus(), parseJwtInfoErr.GetMsg())
 			return
 		}
 
-		accountId, _ := strconv.Atoi(jwtAccountId)
+		accId, _ := strconv.Atoi(jwtAccountId)
 
 		// Jwt token state management
-		//env := api.GetEnv()
+		env := api.GetEnv()
+		tc := tokenRepo.NewRedis(env.RedisCluster)
+		serverIat, err := tc.GetTokenIat(accId)
+		if err != nil {
+			findErr := er.NewAppErr(http.StatusInternalServerError, er.UnknownError, "find token error.", err)
+			c.AbortWithStatusJSON(findErr.GetStatus(), findErr.GetMsg())
+			return
+		}
+		if jwtIat < serverIat {
+			iatErr := er.NewAppErr(http.StatusUnauthorized, er.UnauthorizedError, "token is expired.", nil)
+			c.AbortWithStatusJSON(iatErr.GetStatus(), iatErr.GetMsg())
+			return
+		}
 
-		// TODO 後踢前
-		/*
-			tokenCache := tokenRepo.NewRedisTokenRepo(env.Redis)
-			serverIat, err := tokenCache.GetCodeCertTokenIat(accountId)
-
-			if jwtIat < serverIat {
-				iatErr := er.NewAppErr(401, er.UnauthorizedError, "Token is expired", nil)
-				c.AbortWithStatusJSON(iatErr.GetStatus(), iatErr.GetMsg())
-				return
-			}
-		*/
-
+		// Set claims
 		c.Set("claims", claims)
-		c.Set("account_id", accountId)
+		c.Set("account_id", accId)
 
 		c.Next()
 	}

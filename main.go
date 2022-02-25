@@ -36,6 +36,7 @@ func main() {
 	// init driver
 	_ = api.InitXorm()
 	_ = api.InitRedis()
+	_ = api.InitRedisCluster()
 
 	// init gin router
 	r := route.Init()

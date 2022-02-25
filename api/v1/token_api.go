@@ -4,6 +4,7 @@ import (
 	"address-book-go/api"
 	"address-book-go/dto/apireq"
 	sysAccRepo "address-book-go/internal/system/sys_account/repository"
+	tokenRepo "address-book-go/internal/token/repository"
 	tokenSrv "address-book-go/internal/token/service"
 	"address-book-go/pkg/er"
 	"address-book-go/pkg/valider"
@@ -43,7 +44,8 @@ func GetToken(c *gin.Context) {
 
 	env := api.GetEnv()
 	sar := sysAccRepo.NewRepository(env.Orm)
-	ts := tokenSrv.NewService(sar)
+	tc := tokenRepo.NewRedis(env.RedisCluster)
+	ts := tokenSrv.NewService(sar, tc)
 	res, err := ts.GenToken(&req)
 	if err != nil {
 		_ = c.Error(err)

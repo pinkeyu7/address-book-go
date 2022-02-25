@@ -10,15 +10,18 @@ import (
 	"address-book-go/pkg/er"
 	"address-book-go/pkg/helper"
 	"net/http"
+	"time"
 )
 
 type Service struct {
 	sysAccRepo sys_account.Repository
+	tokenCache token.Cache
 }
 
-func NewService(sar sys_account.Repository) token.Service {
+func NewService(sar sys_account.Repository, tc token.Cache) token.Service {
 	return &Service{
 		sysAccRepo: sar,
+		tokenCache: tc,
 	}
 }
 
@@ -47,8 +50,9 @@ func (s *Service) GenToken(req *apireq.GetSysAccountToken) (*apires.SysAccountTo
 		return nil, tokenErr
 	}
 
-	// TODO 補後踢前
-	//_ = tokenCache.SetCodeCertTokenSession(account.Id, iat)
+	// Set iat
+	iat := time.Now().UTC().Unix()
+	_ = s.tokenCache.SetTokenIat(acc.Id, iat)
 
 	mapData := map[string]interface{}{}
 	mapData["name"] = acc.Name

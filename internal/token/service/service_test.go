@@ -5,6 +5,7 @@ import (
 	"address-book-go/driver"
 	"address-book-go/dto/apireq"
 	sysAccRepo "address-book-go/internal/system/sys_account/repository"
+	tokenRepo "address-book-go/internal/token/repository"
 	"address-book-go/pkg/er"
 	"address-book-go/pkg/valider"
 	"github.com/joho/godotenv"
@@ -40,8 +41,10 @@ func setUp() {
 func TestService_GenToken(t *testing.T) {
 	// Arrange
 	orm, _ := driver.NewXorm()
+	rc, _ := driver.NewRedis()
 	sar := sysAccRepo.NewRepository(orm)
-	ts := NewService(sar)
+	tc := tokenRepo.NewRedis(rc)
+	ts := NewService(sar, tc)
 
 	// No data
 	req := apireq.GetSysAccountToken{
