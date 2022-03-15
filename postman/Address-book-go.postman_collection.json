@@ -1,0 +1,374 @@
+{
+	"info": {
+		"_postman_id": "8fa79916-cb8b-48c0-b92f-fca0a330a117",
+		"name": "Address-book-go",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Token",
+			"item": [
+				{
+					"name": "token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"// test task",
+									"tests[\"Status 200\"] = responseCode.code === 200;",
+									"tests[\"Response time < 3000ms\"] = responseTime < 3000;",
+									"tests[\"Body match json format\"] = jsonData;",
+									"tests[\"Status code is not 401\"] = responseCode.code !== 401;",
+									"// test index",
+									"tests[\"Includes : token\"] = responseBody.has(\"token\");",
+									"tests[\"Includes : expired_at\"] = responseBody.has(\"expired_at\");",
+									"// test data",
+									"tests[\"Not null : token\"] = jsonData.token !== \"\";",
+									"tests[\"Not null : expired_at\"] = jsonData.expired_at !== \"\";",
+									"",
+									"// save variable to env",
+									"postman.setEnvironmentVariable(\"BEARER\", jsonData.token);",
+									"",
+									"var parts = jsonData.token.split('.');",
+									"var payload = JSON.parse(atob(parts[1]))",
+									"postman.setEnvironmentVariable('ACCOUNT_ID', payload.account_id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"account\": \"sys_account\",\n    \"password\": \"A12345678\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{SITE_URL}}/v1/token",
+							"host": [
+								"{{SITE_URL}}"
+							],
+							"path": [
+								"v1",
+								"token"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Contacts",
+			"item": [
+				{
+					"name": "contacts",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// var jsonData = JSON.parse(responseBody);",
+									"",
+									"// test task",
+									"tests[\"Status 200\"] = responseCode.code === 200;",
+									"tests[\"Response time < 3000ms\"] = responseTime < 3000;",
+									"// tests[\"Body match json format\"] = jsonData;",
+									"tests[\"Status code is not 401\"] = responseCode.code !== 401;",
+									"// test data"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "bearer",
+								"value": "{{BEARER}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"insert_name\",\n    \"phone\": \"insert_phone\",\n    \"email\": \"pinke.yu@gmail.com\",\n    \"gender\": 2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{SITE_URL}}/v1/contacts",
+							"host": [
+								"{{SITE_URL}}"
+							],
+							"path": [
+								"v1",
+								"contacts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "contacts",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// var jsonData = JSON.parse(responseBody);",
+									"",
+									"// test task",
+									"tests[\"Status 200\"] = responseCode.code === 200;",
+									"tests[\"Response time < 3000ms\"] = responseTime < 3000;",
+									"// tests[\"Body match json format\"] = jsonData;",
+									"tests[\"Status code is not 401\"] = responseCode.code !== 401;",
+									"// test data"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "bearer",
+								"value": "{{BEARER}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{SITE_URL}}/v1/contacts?page=1&per_page=25",
+							"host": [
+								"{{SITE_URL}}"
+							],
+							"path": [
+								"v1",
+								"contacts"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "per_page",
+									"value": "25"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "contacts/{contact_id}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// var jsonData = JSON.parse(responseBody);",
+									"",
+									"// test task",
+									"tests[\"Status 200\"] = responseCode.code === 200;",
+									"tests[\"Response time < 3000ms\"] = responseTime < 3000;",
+									"// tests[\"Body match json format\"] = jsonData;",
+									"tests[\"Status code is not 401\"] = responseCode.code !== 401;",
+									"// test data"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "bearer",
+								"value": "{{BEARER}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{SITE_URL}}/v1/contacts/:contact_id",
+							"host": [
+								"{{SITE_URL}}"
+							],
+							"path": [
+								"v1",
+								"contacts",
+								":contact_id"
+							],
+							"variable": [
+								{
+									"key": "contact_id",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "contacts/{contact_id}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// var jsonData = JSON.parse(responseBody);",
+									"",
+									"// test task",
+									"tests[\"Status 200\"] = responseCode.code === 200;",
+									"tests[\"Response time < 3000ms\"] = responseTime < 3000;",
+									"// tests[\"Body match json format\"] = jsonData;",
+									"tests[\"Status code is not 401\"] = responseCode.code !== 401;",
+									"// test data"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "bearer",
+								"value": "{{BEARER}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"update_name\",\n    \"phone\": \"update_phone\",\n    \"email\": \"pinke.yu@gmail.com\",\n    \"gender\": 0\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{SITE_URL}}/v1/contacts/:contact_id",
+							"host": [
+								"{{SITE_URL}}"
+							],
+							"path": [
+								"v1",
+								"contacts",
+								":contact_id"
+							],
+							"variable": [
+								{
+									"key": "contact_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "contacts/{contact_id}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// var jsonData = JSON.parse(responseBody);",
+									"",
+									"// test task",
+									"tests[\"Status 200\"] = responseCode.code === 200;",
+									"tests[\"Response time < 3000ms\"] = responseTime < 3000;",
+									"// tests[\"Body match json format\"] = jsonData;",
+									"tests[\"Status code is not 401\"] = responseCode.code !== 401;",
+									"// test data"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "bearer",
+								"value": "{{BEARER}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"accountId\": {{ACCOUNT_ID}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{SITE_URL}}/v1/contacts/:contact_id",
+							"host": [
+								"{{SITE_URL}}"
+							],
+							"path": [
+								"v1",
+								"contacts",
+								":contact_id"
+							],
+							"variable": [
+								{
+									"key": "contact_id",
+									"value": "44"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
