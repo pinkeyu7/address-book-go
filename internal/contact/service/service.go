@@ -117,3 +117,23 @@ func (s *Service) Edit(contactId int, req *apireq.EditContact) error {
 
 	return nil
 }
+
+func (s *Service) Delete(contactId int) error {
+	con, err := s.contactRepo.FindOne(&model.Contact{Id: contactId})
+	if err != nil {
+		findErr := er.NewAppErr(http.StatusInternalServerError, er.UnknownError, "find contact error.", err)
+		return findErr
+	}
+	if con == nil {
+		notFoundErr := er.NewAppErr(http.StatusBadRequest, er.ResourceNotFoundError, "contact not found.", nil)
+		return notFoundErr
+	}
+
+	err = s.contactRepo.Delete(contactId)
+	if err != nil {
+		deleteErr := er.NewAppErr(http.StatusInternalServerError, er.UnknownError, "delete contact error.", err)
+		return deleteErr
+	}
+
+	return nil
+}

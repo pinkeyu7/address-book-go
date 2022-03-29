@@ -11,4 +11,5 @@ type Service interface {
 	Get(contactId int) (*model.Contact, error)
 	Add(req *apireq.AddContact) error
 	Edit(contactId int, req *apireq.EditContact) error
+	Delete(contactId int) error
 }

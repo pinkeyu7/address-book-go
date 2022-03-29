@@ -177,3 +177,38 @@ func TestService_Edit(t *testing.T) {
 	// Teardown
 	_, _ = orm.ID(contactId).Update(&con)
 }
+
+func TestService_Delete(t *testing.T) {
+	// Arrange
+	orm, _ := driver.NewXorm()
+	cr := contactRepo.NewRepository(orm)
+	cs := NewService(cr)
+
+	// No data
+	contactId := 10
+
+	// Act
+	err := cs.Edit(contactId, &apireq.EditContact{})
+
+	// Assert
+	assert.NotNil(t, err)
+	notFoundErr := err.(*er.AppError)
+	assert.Equal(t, http.StatusBadRequest, notFoundErr.StatusCode)
+	assert.Equal(t, strconv.Itoa(er.ResourceNotFoundError), notFoundErr.Code)
+
+	// Has data
+	gender := contact.Male
+	con := model.Contact{
+		Phone:  "test_phone",
+		Email:  "test_email",
+		Name:   "test_name",
+		Gender: &gender,
+	}
+	_, _ = orm.Insert(&con)
+
+	// Act
+	err = cs.Delete(con.Id)
+
+	// Assert
+	assert.Nil(t, err)
+}
