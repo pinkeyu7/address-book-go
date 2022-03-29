@@ -7,13 +7,12 @@ import (
 	"address-book-go/internal/contact"
 	"address-book-go/pkg/valider"
 	"fmt"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 	"log"
 	"os"
 	"testing"
-
-	_ "github.com/go-sql-driver/mysql"
 )
 
 func TestMain(m *testing.M) {
@@ -151,4 +150,25 @@ func TestRepository_Update(t *testing.T) {
 
 	// Teardown
 	_, _ = orm.ID(con.Id).Update(&con)
+}
+
+func TestRepository_Delete(t *testing.T) {
+	// Arrange
+	orm, _ := driver.NewXorm()
+	cr := NewRepository(orm)
+
+	gender := contact.Male
+	con := model.Contact{
+		Phone:  "test_phone",
+		Email:  "test_email",
+		Name:   "test_name",
+		Gender: &gender,
+	}
+	_, _ = orm.Insert(&con)
+
+	// Act
+	err := cr.Delete(con.Id)
+
+	// Assert
+	assert.Nil(t, err)
 }

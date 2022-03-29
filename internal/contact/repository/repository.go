@@ -63,3 +63,12 @@ func (r *Repository) Update(m *model.Contact) error {
 	}
 	return nil
 }
+
+func (r *Repository) Delete(contactId int) error {
+	_, err := r.orm.ID(contactId).Delete(&model.Contact{})
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

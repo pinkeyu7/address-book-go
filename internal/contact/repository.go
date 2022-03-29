@@ -8,4 +8,5 @@ type Repository interface {
 	FindOne(m *model.Contact) (*model.Contact, error)
 	Count() (int, error)
 	Update(m *model.Contact) error
+	Delete(contactId int) error
 }
