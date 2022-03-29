@@ -25,3 +25,7 @@ type EditContact struct {
 	Phone     string `json:"phone" validate:"required,max=25"`
 	Gender    *int   `json:"gender" validate:"required,oneof=0 1 2"`
 }
+
+type DeleteContact struct {
+	AccountId int `json:"account_id" validate:"required"`
+}

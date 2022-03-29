@@ -234,3 +234,62 @@ func EditContact(c *gin.Context) {
 
 	c.JSON(http.StatusOK, map[string]interface{}{})
 }
+
+// DeleteContact
+// @Summary Delete Contact 刪除聯絡人
+// @Produce json
+// @Accept json
+// @Tags Contact
+// @Security Bearer
+// @Param Bearer header string true "JWT Token"
+// @Param contact_id path int true "聯絡人id e.g. 11"
+// @Param Body body apireq.DeleteContact true "Request Delete Contact"
+// @Success 200 {string} string "{}"
+// @Failure 400 {object} er.AppErrorMsg "{"code":"400400","message":"Wrong parameter format or invalid"}"
+// @Failure 401 {object} er.AppErrorMsg "{"code":"400401","message":"Unauthorized"}"
+// @Failure 403 {object} er.AppErrorMsg "{"code":"400403","message":"Permission denied"}"
+// @Failure 404 {object} er.AppErrorMsg "{"code":"400404","message":"Resource not found"}"
+// @Failure 500 {object} er.AppErrorMsg "{"code":"500000","message":"Database unknown error"}"
+// @Router /v1/contacts/{contact_id} [delete]
+func DeleteContact(c *gin.Context) {
+	contactIdStr := c.Param("id")
+	contactId, err := strconv.Atoi(contactIdStr)
+	if err != nil {
+		paramErr := er.NewAppErr(http.StatusBadRequest, er.ErrorParamInvalid, "contact id format error.", err)
+		_ = c.Error(paramErr)
+		return
+	}
+
+	req := apireq.DeleteContact{}
+	err = c.BindJSON(&req)
+	if err != nil {
+		paramErr := er.NewAppErr(http.StatusBadRequest, er.ErrorParamInvalid, err.Error(), err)
+		_ = c.Error(paramErr)
+		return
+	}
+
+	// 參數驗證
+	err = valider.Validate.Struct(req)
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	// 驗證 jwt user == user_id
+	err = tokenLibrary.CheckJWTAccountId(c, req.AccountId)
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	env := api.GetEnv()
+	cr := contactRepo.NewRepository(env.Orm)
+	cs := contactSrv.NewService(cr)
+	err = cs.Delete(contactId)
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{})
+}

@@ -25,4 +25,8 @@ func ContactV1(r *gin.Engine) {
 	v1Auth.PUT("/:id", func(c *gin.Context) {
 		apiV1.EditContact(c)
 	})
+
+	v1Auth.DELETE("/:id", func(c *gin.Context) {
+		apiV1.DeleteContact(c)
+	})
 }
