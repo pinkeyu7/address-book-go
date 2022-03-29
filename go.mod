@@ -4,7 +4,6 @@ go 1.17
 
 require (
 	github.com/brianvoe/gofakeit/v4 v4.3.0
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gin-contrib/cors v1.3.1
 	github.com/gin-gonic/gin v1.7.7
 	github.com/go-playground/locales v0.14.0
@@ -12,6 +11,7 @@ require (
 	github.com/go-playground/validator/v10 v10.10.1
 	github.com/go-redis/redis/v7 v7.4.1
 	github.com/go-sql-driver/mysql v1.6.0
+	github.com/golang-jwt/jwt/v4 v4.4.1
 	github.com/gomodule/redigo v1.8.8
 	github.com/joho/godotenv v1.4.0
 	github.com/sirupsen/logrus v1.8.1

@@ -5,6 +5,7 @@ import (
 	"address-book-go/dto/apireq"
 	contactRepo "address-book-go/internal/contact/repository"
 	contactSrv "address-book-go/internal/contact/service"
+	tokenLibrary "address-book-go/internal/token/library"
 	"address-book-go/pkg/er"
 	"address-book-go/pkg/valider"
 	"github.com/gin-gonic/gin"
@@ -41,6 +42,13 @@ func AddContact(c *gin.Context) {
 	if err != nil {
 		paramErr := er.NewAppErr(http.StatusBadRequest, er.ErrorParamInvalid, err.Error(), err)
 		_ = c.Error(paramErr)
+		return
+	}
+
+	// 驗證 jwt user == user_id
+	err = tokenLibrary.CheckJWTAccountId(c, req.AccountId)
+	if err != nil {
+		_ = c.Error(err)
 		return
 	}
 
@@ -89,6 +97,13 @@ func ListContact(c *gin.Context) {
 		return
 	}
 
+	// 驗證 jwt user == user_id
+	err = tokenLibrary.CheckJWTAccountId(c, req.AccountId)
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
 	env := api.GetEnv()
 	cr := contactRepo.NewRepository(env.Orm)
 	cs := contactSrv.NewService(cr)
@@ -122,6 +137,29 @@ func GetContact(c *gin.Context) {
 	if err != nil {
 		paramErr := er.NewAppErr(http.StatusBadRequest, er.ErrorParamInvalid, "contact id format error.", err)
 		_ = c.Error(paramErr)
+		return
+	}
+
+	req := apireq.GetContact{}
+	err = c.Bind(&req)
+	if err != nil {
+		paramErr := er.NewAppErr(http.StatusBadRequest, er.ErrorParamInvalid, err.Error(), err)
+		_ = c.Error(paramErr)
+		return
+	}
+
+	// 參數驗證
+	err = valider.Validate.Struct(req)
+	if err != nil {
+		paramErr := er.NewAppErr(http.StatusBadRequest, er.ErrorParamInvalid, err.Error(), err)
+		_ = c.Error(paramErr)
+		return
+	}
+
+	// 驗證 jwt user == user_id
+	err = tokenLibrary.CheckJWTAccountId(c, req.AccountId)
+	if err != nil {
+		_ = c.Error(err)
 		return
 	}
 
@@ -175,6 +213,13 @@ func EditContact(c *gin.Context) {
 	if err != nil {
 		paramErr := er.NewAppErr(http.StatusBadRequest, er.ErrorParamInvalid, err.Error(), err)
 		_ = c.Error(paramErr)
+		return
+	}
+
+	// 驗證 jwt user == user_id
+	err = tokenLibrary.CheckJWTAccountId(c, req.AccountId)
+	if err != nil {
+		_ = c.Error(err)
 		return
 	}
 
